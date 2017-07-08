@@ -1,6 +1,9 @@
 package com.msharbaji93.minddownloader;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
+
 import java.io.IOException;
 import okhttp3.Response;
 
@@ -16,13 +19,13 @@ public interface Downloader {
      *
      * @throws IOException if the requested URL cannot successfully be loaded.
      */
-    @NonNull Response load(@NonNull okhttp3.Request request) throws IOException;
+    @NonNull void load(@NonNull okhttp3.Request request,  final OkHttp3Downloader.DownoadFileCallback downoadFileCallback) throws IOException;
 
     /**
      * Download the specified file {@code url} from the internet.
      *
      * @throws IOException if the requested URL cannot successfully be loaded.
      */
-    @NonNull Response load(@NonNull String url) throws IOException;
+    @NonNull void load(@NonNull String url , final OkHttp3Downloader.DownoadFileCallback downoadFileCallback) throws IOException;
 
 }
