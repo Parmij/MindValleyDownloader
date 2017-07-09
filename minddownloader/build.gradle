@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'Mind-valley-downloader'
+
+    publishedGroupId = 'com.mindvalley.downloader'
+    libraryName = 'minddownloader'
+    artifact = 'minddownloader'
+
+    libraryDescription = 'A library that help download all types of files and text'
+
+    siteUrl = 'https://github.com/Parmij/MindValleyDownloader'
+    gitUrl = 'https://github.com/Parmij/MindValleyDownloader.git'
+
+    libraryVersion = '0.0.1'
+
+    developerId = 'msharbaji93'
+    developerName = 'Mohamad Abdalbaqi Alsharbaji'
+    developerEmail = 'msharbaji@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
@@ -31,3 +55,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     testCompile 'junit:junit:4.12'
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

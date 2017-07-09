@@ -24,6 +24,6 @@ public class ApiHelper {
 
     public void getJsonContent (Context context, String url, MindValleyDownloader.LoadJson callback){
         MindValleyDownloader mindValleyDownloader = new MindValleyDownloader(context);
-       mindValleyDownloader.load(url, callback);
+        mindValleyDownloader.load(url, callback);
 }
 }

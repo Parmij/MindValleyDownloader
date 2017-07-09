@@ -41,9 +41,7 @@ public class GridViewAdapter extends BaseAdapter {
         this.urls = urls;
         mindValleyDownloader = new MindValleyDownloader(context);
         imgHeight = Utils.dpToPx(context, 130);
-//        imgWidth = Utils.dpToPx(context, 200);
         jobOptions = new JobOptions();
-        jobOptions.setPlaceholderResId(R.color.placeholder);
         jobOptions.setScaleType(ScaleType.CENTER_CROP);
         jobOptions.setRequestedHeight(imgHeight);
         jobOptions.setRequestedWidth(imgWidth);
