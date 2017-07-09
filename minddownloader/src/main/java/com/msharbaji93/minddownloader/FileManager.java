@@ -3,17 +3,13 @@ package com.msharbaji93.minddownloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.WeakHashMap;
+
 import com.msharbaji93.minddownloader.CacheManager.CacheManagerCallback;
 
 /**
@@ -24,37 +20,32 @@ public class FileManager {
 
     private static final String TAG = "FileManager";
 
-    public static final int NO_PLACEHOLDER = -1;
-
     // TODO: Should be removed once a job is finished
-    private static final Map<View, String> runningJobs = Collections.synchronizedMap(new WeakHashMap<View, String>());
+    public static final Map<View, String> runningJobs = Collections.synchronizedMap(new WeakHashMap<View, String>());
 
     private static CacheManager defaultCacheManager;
 
-    private static final Handler uiHandler = new Handler(Looper.getMainLooper());
-
     private final Context context;
 
-    private final CacheManager cacheManager;
+    public static CacheManager getDefaultCacheManager() {
+        return defaultCacheManager;
+    }
+
+    public static void setDefaultCacheManager(CacheManager defaultCacheManager) {
+        FileManager.defaultCacheManager = defaultCacheManager;
+    }
 
     private ViewCallback viewCallback;
 
     private FileCallback fileCallback;
 
-    private int placeholderResId = Color.parseColor("#eeeeee");
-
     public FileManager(final Context context) {
-        this(context,
-                defaultCacheManager == null
-                        ? (defaultCacheManager = new CacheManager(
-                        Utils.createDefaultMemoryLruCache(context))) : defaultCacheManager);
-    }
-
-    public FileManager(final Context context, final CacheManager cacheManager) {
-
+        defaultCacheManager = defaultCacheManager == null
+                ? (defaultCacheManager = new CacheManager(
+                Utils.createDefaultMemoryLruCache(context))) : defaultCacheManager;
         this.context = context;
-        this.cacheManager = cacheManager;
     }
+
 
     public Context getContext() {
         return context;
@@ -65,24 +56,24 @@ public class FileManager {
         runningJobs.clear();
     }
 
-    public void load(final String urlString, final ImageView imageView, final JobOptions options) {
-        if (urlString == null || urlString == "")
-            return;
-
-        final FileManager self = this;
-
-        load(urlString, imageView, options, new CacheManagerCallback() {
-            @Override
-            public void onFileLoaded(final Object bitmap,final LoadedFrom source) {
-                if (bitmap == null) {
-                    work(urlString, imageView, options);
-                } else {
-                    final FileProcessorCallback callback = new FileProcessorCallback(self, urlString, imageView, options);
-                    callback.onFileLoaded((Bitmap) bitmap, source);
-                }
-            }
-        });
-    }
+//    public void load(final String urlString, final ImageView imageView, final JobOptions options) {
+//        if (urlString == null || urlString == "")
+//            return;
+//
+//        final FileManager self = this;
+//
+//        load(urlString, imageView, options, new CacheManagerCallback() {
+//            @Override
+//            public void onFileLoaded(final Object bitmap, final LoadedFrom source) {
+//                if (bitmap == null) {
+//                    work(urlString, imageView, options);
+//                } else {
+//                    final FileProcessorCallback callback = new FileProcessorCallback(self, urlString, imageView, options);
+//                    callback.onFileLoaded((Bitmap) bitmap, LoadedFrom.NETWORK);
+//                }
+//            }
+//        });
+//    }
 
 //    public void load(final String urlString) {
 //        if (urlString == null || urlString == "")
@@ -107,15 +98,15 @@ public class FileManager {
 //        });
 //    }
 
-    private void load(final String urlString, final View view, final JobOptions options, final CacheManagerCallback callback) {
-        runningJobs.put(view, urlString);
-
-        if(view instanceof ImageView) {
-            if (placeholderResId != NO_PLACEHOLDER)
-                CustomDrawable.setPlaceholder((ImageView) view, placeholderResId, null);
-            cacheManager.get(getCacheKeyForJob(urlString, options), callback);
-        }
-    }
+//    private void load(final String urlString, final View view, final JobOptions options, final CacheManagerCallback callback) {
+//        runningJobs.put(view, urlString);
+//
+//        if(view instanceof ImageView) {
+//            if (JobOptions.getPlaceholderResId() != NO_PLACEHOLDER)
+//                CustomDrawable.setPlaceholder((ImageView) view, placeholderResId, null);
+//            cacheManager.get(getCacheKeyForJob(urlString, options), callback);
+//        }
+//    }
 
 //    private void work(final String url) {
 //        byte[] binaryData = null;
@@ -150,29 +141,8 @@ public class FileManager {
 //
 //    }
 
-    private void work(final String url, final ImageView imageView, final JobOptions options) {
-        final FileProcessorCallback callback = new FileProcessorCallback(this, url, imageView, options);
 
-        FileProcessor.decodeSampledBitmapFromRemoteUrl(context, url, options.requestedWidth, options.requestedHeight, callback);
-    }
 
-    public static String getCacheKeyForJob(final String url, final JobOptions options) {
-//        if (options.requestedHeight <= 0 && options.requestedWidth <= 0)
-            return url;
-//        return String.format("%s-%sx%s", url, options.requestedWidth, options.requestedHeight);
-    }
-
-    public CacheManager getCacheManager() {
-        return cacheManager;
-    }
-
-    public void setPlaceholderResId(final int placeholderResId) {
-        this.placeholderResId = placeholderResId;
-    }
-
-    public int getPlaceholderResId() {
-        return placeholderResId;
-    }
 
     public ViewCallback getViewCallback() {
         return viewCallback;
@@ -199,6 +169,6 @@ public class FileManager {
     }
 
     public interface FileCallback {
-        void onFileLoaded(Bitmap bitmap);
+        void onFileLoaded(Bitmap bitmap, final LoadedFrom source);
     }
 }

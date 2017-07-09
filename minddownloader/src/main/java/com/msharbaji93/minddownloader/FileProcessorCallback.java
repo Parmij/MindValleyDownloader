@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+
+import org.json.JSONObject;
 
 /**
  * Created by MHDSHA on 08/07/2017.
@@ -16,63 +19,90 @@ public class FileProcessorCallback implements FileManagerCallback {
 
     private final FileManager fileManager;
     private final String url;
-    private final ImageView imageView;
-    private final JobOptions options;
+    private View view;
+    private JobOptions options;
+
+    public View getView() {
+        return view;
+    }
+
+    public void setView(View view) {
+        this.view = view;
+    }
+
+    public JobOptions getOptions() {
+        return options;
+    }
+
+    public void setOptions(JobOptions options) {
+        this.options = options;
+    }
 
     private static final Handler uiHandler = new Handler(Looper.getMainLooper());
 
-    public FileProcessorCallback(FileManager fileManager, String url, ImageView imageView, JobOptions options) {
+    public FileProcessorCallback(FileManager fileManager, String url) {
         this.url = url;
-        this.imageView = imageView;
-        this.options = options;
         this.fileManager = fileManager;
     }
 
     @Override
-    public void onFileLoaded(Bitmap bitmap, LoadedFrom source) {
-
+    public void onFileLoaded(Bitmap bitmap, final LoadedFrom source) {
         if (bitmap == null) {
             Log.e(TAG, "queueJob for urlString null");
             return;
         }
 
-        fileManager.getCacheManager().put(FileManager.getCacheKeyForJob(url, options), bitmap);
+        fileManager.getDefaultCacheManager().put(url, bitmap);
 
-        final String cachedUrl = fileManager.getRunningJobs().get(imageView);
+        final String cachedUrl = fileManager.getRunningJobs().get(view);
 
         if (cachedUrl != null && cachedUrl.equals(url)) {
-            options.fadeIn = true;
-            setImageDrawable(imageView, bitmap, options, source);
+            options.setFadeIn(true);
+            setImageDrawable((ImageView) view, bitmap, options, source);
         }
     }
 
+
+    @Override
+    public String onJsonLoaded(String jsonObject, final LoadedFrom source) {
+        if (jsonObject == null) {
+            Log.e(TAG, "queueJob for urlString null");
+            return "";
+        }
+
+        fileManager.getDefaultCacheManager().put(url, jsonObject);
+        Log.e("ssssssssss", "rrrrrrrr");
+        return jsonObject;
+
+//        final String cachedUrl = fileManager.getRunningJobs().get(view);
+
+//        if (cachedUrl != null && cachedUrl.equals(url)) {
+//            options.setFadeIn(true);
+//            setImageDrawable((ImageView) view, bitmap, options, source);
+//        }
+    }
+
+
     @Override
     public void onLoadFailed(LoadedFrom source, Exception e) {
-        if (fileManager.getPlaceholderResId() != FileManager.NO_PLACEHOLDER) {
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    CustomDrawable.setPlaceholder(imageView, fileManager.getPlaceholderResId(), null);
-                }
-            });
-        }
+        Log.e(TAG, e.getMessage());
     }
 
     private void setImageDrawable(final ImageView imageView, Bitmap bitmap, final JobOptions options, final LoadedFrom loadedFrom) {
         final int targetWidth = imageView.getMeasuredWidth();
         final int targetHeight = imageView.getMeasuredHeight();
         if (targetWidth != 0 && targetHeight != 0) {
-            options.requestedWidth = targetWidth;
-            options.requestedHeight = targetHeight;
+            options.setRequestedWidth(targetWidth);
+            options.setRequestedHeight(targetHeight);
         }
 
         // Process the transformed (smaller) image
         final FileProcessor processor = new FileProcessor(fileManager.getContext());
         Bitmap processedBitmap = null;
 
-        if (options.roundedCorners)
-            processedBitmap = processor.getRoundedCorners(bitmap, options.radius);
-        else if (options.circle)
+        if (options.isRoundedCorners())
+            processedBitmap = processor.getRoundedCorners(bitmap, options.getRadius());
+        else if (options.isCircle())
             processedBitmap = processor.getCircle(bitmap);
 
         if (processedBitmap != null)
@@ -83,7 +113,7 @@ public class FileProcessorCallback implements FileManagerCallback {
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                CustomDrawable.setBitmap(imageView, fileManager.getContext(), finalBitmap, loadedFrom, !options.fadeIn, true);
+                CustomDrawable.setBitmap(imageView, fileManager.getContext(), finalBitmap, loadedFrom, !options.isFadeIn(), true);
 
                 final FileManager.ViewCallback imageViewCallback = fileManager.getViewCallback();
 

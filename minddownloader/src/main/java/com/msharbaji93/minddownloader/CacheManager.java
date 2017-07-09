@@ -8,7 +8,6 @@ import android.util.Log;
 
 public class CacheManager implements MemoryLruCache.MemoryCacheEntryRemovedCallback {
 
-
     private static final String TAG = "CacheManager";
     private final MemoryLruCache memoryLruCache;
 
@@ -38,8 +37,13 @@ public class CacheManager implements MemoryLruCache.MemoryCacheEntryRemovedCallb
         }
     }
 
-    public void get(final String id) {
-        get(id, null);
+    public void get(final String id, final CacheManagerStringCallback callback) {
+        final Object object = getFileFromLRUCache(id);
+
+        if (callback != null) {
+            callback.onStringLoaded(object, LoadedFrom.MEMORY);
+            return;
+        }
     }
 
     public void put(final String key, final Object object) {
@@ -65,6 +69,11 @@ public class CacheManager implements MemoryLruCache.MemoryCacheEntryRemovedCallb
     }
 
     public static interface CacheManagerCallback {
-        void onFileLoaded(final Object bitmap, final LoadedFrom source);
+        void onFileLoaded(final Object object, final LoadedFrom source);
     }
+
+    public static interface CacheManagerStringCallback {
+        void onStringLoaded(final Object object, final LoadedFrom source);
+    }
+
 }

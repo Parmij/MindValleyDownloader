@@ -1,10 +1,8 @@
 package com.msharbaji93.minddownloader;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.util.Log;
 
 import static android.content.Context.ACTIVITY_SERVICE;
@@ -17,9 +15,7 @@ import static android.os.Build.VERSION_CODES.KITKAT;
  */
 
 public class Utils {
-
     private static final String TAG = "Utils";
-    static final char KEY_SEPARATOR = '\n';
 
     @SuppressWarnings("unchecked")
     static <T> T getService(Context context, String service) {
@@ -59,10 +55,8 @@ public class Utils {
         // Get the screen's density scale
         final float scale = context.getResources().getDisplayMetrics().density;
         // Convert the dps to pixels, based on density scale
-        return (int)((dp * scale) + 0.5f);
+        return (int) ((dp * scale) + 0.5f);
     }
-
-
 
 
 }

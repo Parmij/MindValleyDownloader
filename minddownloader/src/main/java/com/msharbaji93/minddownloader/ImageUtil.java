@@ -88,15 +88,15 @@ public class ImageUtil {
         // This is very inefficient, but will only happen in 0.01% cases and not
         // during normal app execution (eg. Add Images->Bookmarklet->Try to preview huge image)
         // TODO: Find a more optimum way of doing this
-        if (options.bounds > 0 && (bitmap.getWidth() > options.bounds || bitmap.getHeight() > options.bounds)) {
+        if (options.getBounds() > 0 && (bitmap.getWidth() > options.getBounds()|| bitmap.getHeight() > options.getBounds())) {
             final float aspect = (float)bitmap.getWidth() / (float)bitmap.getHeight();
             final int boundsWidth, boundsHeight;
             if (bitmap.getWidth() > bitmap.getHeight()) {
-                final int delta = bitmap.getWidth() - options.bounds;
+                final int delta = bitmap.getWidth() - options.getBounds();
                 boundsWidth = bitmap.getWidth() - delta;
                 boundsHeight = bitmap.getHeight() - (int)Math.floor((delta / aspect) + .5f);
             } else {
-                final int delta = bitmap.getHeight() - options.bounds;
+                final int delta = bitmap.getHeight() - options.getBounds();
                 boundsWidth = bitmap.getWidth() - (int)Math.floor((delta * aspect) + .5f);
                 boundsHeight = bitmap.getHeight() - delta;
             }
@@ -116,11 +116,11 @@ public class ImageUtil {
         final Matrix matrix = new Matrix();
 
         if (options != null) {
-            int targetWidth = options.requestedWidth;
-            int targetHeight = options.requestedHeight;
+            int targetWidth = options.getRequestedWidth();
+            int targetHeight = options.getRequestedHeight();
 
-            if (options.scaleType != null && targetWidth != 0 && targetHeight != 0 && !(targetWidth == inWidth && targetHeight == inHeight)) {
-                switch (options.scaleType) {
+            if (options.getScaleType() != null && targetWidth != 0 && targetHeight != 0 && !(targetWidth == inWidth && targetHeight == inHeight)) {
+                switch (options.getScaleType()) {
                     case CENTER_CROP: {
                         final float widthRatio = targetWidth / (float)inWidth;
                         final float heightRatio = targetHeight / (float)inHeight;
