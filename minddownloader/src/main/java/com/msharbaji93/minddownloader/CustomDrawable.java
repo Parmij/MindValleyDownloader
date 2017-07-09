@@ -28,6 +28,17 @@ public class CustomDrawable extends Drawable {
 
     private static final float FADE_DURATION = 200f; // ms
 
+    private final boolean debugging;
+    private final float density;
+    private final LoadedFrom loadedFrom;
+    private final BitmapDrawable image;
+
+    private Drawable placeholder;
+
+    private long startTimeMillis;
+    private boolean animating;
+    private int alpha = 0xFF;
+
     /**
      * Create or update the drawable on the target {@link ImageView} to display the supplied bitmap
      * image.
@@ -46,25 +57,14 @@ public class CustomDrawable extends Drawable {
      */
     static void setPlaceholder(final ImageView target, final int placeholderResId, final Drawable placeholderDrawable) {
         if (placeholderResId != 0) {
-            target.setImageResource(placeholderResId);
+            target.setBackgroundColor(placeholderResId);
         } else {
             target.setImageDrawable(placeholderDrawable);
         }
     }
 
-    private final boolean debugging;
-    private final float density;
-    private final LoadedFrom loadedFrom;
-    final BitmapDrawable image;
-
-    Drawable placeholder;
-
-    long startTimeMillis;
-    boolean animating;
-    int alpha = 0xFF;
-
     CustomDrawable(final Context context, final Drawable placeholder, final Bitmap bitmap,
-                      final LoadedFrom loadedFrom, final boolean noFade, final boolean debugging) {
+                   final LoadedFrom loadedFrom, final boolean noFade, final boolean debugging) {
         final Resources res = context.getResources();
 
         this.debugging = debugging;
@@ -97,7 +97,7 @@ public class CustomDrawable extends Drawable {
                     placeholder.draw(canvas);
                 }
 
-                final int partialAlpha = (int)(alpha * normalized);
+                final int partialAlpha = (int) (alpha * normalized);
                 image.setAlpha(partialAlpha);
                 image.draw(canvas);
                 image.setAlpha(alpha);
@@ -158,21 +158,21 @@ public class CustomDrawable extends Drawable {
 
         final int width = bounds.width();
         final int height = bounds.height();
-        final float ratio = (float)width / height;
+        final float ratio = (float) width / height;
 
         final int drawableWidth = drawable.getIntrinsicWidth();
         final int drawableHeight = drawable.getIntrinsicHeight();
-        final float drawableRatio = (float)drawableWidth / drawableHeight;
+        final float drawableRatio = (float) drawableWidth / drawableHeight;
 
         if (drawableRatio < ratio) {
-            final float scale = (float)height / drawableHeight;
-            final int scaledDrawableWidth = (int)(drawableWidth * scale);
+            final float scale = (float) height / drawableHeight;
+            final int scaledDrawableWidth = (int) (drawableWidth * scale);
             final int drawableLeft = bounds.left - (scaledDrawableWidth - width) / 2;
             final int drawableRight = drawableLeft + scaledDrawableWidth;
             drawable.setBounds(drawableLeft, bounds.top, drawableRight, bounds.bottom);
         } else {
-            final float scale = (float)width / drawableWidth;
-            final int scaledDrawableHeight = (int)(drawableHeight * scale);
+            final float scale = (float) width / drawableWidth;
+            final int scaledDrawableHeight = (int) (drawableHeight * scale);
             final int drawableTop = bounds.top - (scaledDrawableHeight - height) / 2;
             final int drawableBottom = drawableTop + scaledDrawableHeight;
             drawable.setBounds(bounds.left, drawableTop, bounds.right, drawableBottom);
@@ -181,11 +181,11 @@ public class CustomDrawable extends Drawable {
 
     private void drawDebugIndicator(final Canvas canvas) {
         DEBUG_PAINT.setColor(WHITE);
-        Path path = getTrianglePath(new Point(0, 0), (int)(16 * density));
+        Path path = getTrianglePath(new Point(0, 0), (int) (16 * density));
         canvas.drawPath(path, DEBUG_PAINT);
 
         DEBUG_PAINT.setColor(loadedFrom.debugColor);
-        path = getTrianglePath(new Point(0, 0), (int)(15 * density));
+        path = getTrianglePath(new Point(0, 0), (int) (15 * density));
         canvas.drawPath(path, DEBUG_PAINT);
     }
 

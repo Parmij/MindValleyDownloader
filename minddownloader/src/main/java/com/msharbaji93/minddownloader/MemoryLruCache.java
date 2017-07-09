@@ -30,7 +30,8 @@ public class MemoryLruCache extends LruCache<String, Object> {
         // The cache size will be measured in kilobytes rather than number of items.
         if (object instanceof Bitmap)
             return Utils.getBitmapBytes((Bitmap) object) / 1024;
-
+        else if (object instanceof String)
+            return ((String) object).length();
         return -1;
     }
 

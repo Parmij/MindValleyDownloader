@@ -12,6 +12,9 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -220,41 +223,31 @@ public class FileProcessor {
 
     public static void decodeSampledBitmapFromRemoteUrl(final Context context,
                                                         final String urlString,
-                                                        final int reqWidth,
-                                                        final int reqHeight,
+                                                        final JobOptions options,
                                                         final FileManagerCallback callback) {
 
-        decodeSampledBitmapFromRemoteUrl(context, urlString, reqWidth, reqHeight, SamplingMethod.STANDARD, callback);
+        decodeSampledBitmapFromRemoteUrl(context, urlString, options, SamplingMethod.STANDARD, callback);
     }
 
     /**
      * Decodes a sampled Bitmap from the provided url in the requested width and height
      *
      * @param urlString URL to download the bitmap from
-     * @param reqWidth  Requested width
-     * @param reqHeight Requested height
      */
     public static void decodeSampledBitmapFromRemoteUrl(final Context context,
                                                         final String urlString,
-                                                        final int reqWidth,
-                                                        final int reqHeight,
+                                                        final JobOptions jobOptions,
                                                         final SamplingMethod samplingMethod,
                                                         final FileManagerCallback callback) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        options.inPurgeable = true;
-        options.inDither = false;
-        options.inInputShareable = true;
+//        options.inJustDecodeBounds = true;
 
-        byte[] binaryData = null;
         try {
             OkHttp3Downloader.getInstance().load(urlString, new OkHttp3Downloader.DownoadFileCallback() {
                 @Override
                 public void onDownloadFile(byte[] binaryData) {
-
-
                     if (binaryData == null) {
                         callback.onLoadFailed(LoadedFrom.NETWORK, new Exception("binaryData == null"));
                         return;
@@ -262,13 +255,13 @@ public class FileProcessor {
 
                     decodeByteArray(binaryData, options);
 //
-                    int width = reqWidth;
-                    int height = reqHeight;
+                    int width = jobOptions.getRequestedWidth();
+                    int height = jobOptions.getRequestedHeight();
 
-                    if (reqWidth == 0) {
+                    if (jobOptions.getRequestedWidth() == 0) {
                         width = options.outWidth;
                     }
-                    if (reqHeight == 0) {
+                    if (jobOptions.getRequestedHeight() == 0) {
                         height = options.outHeight;
                     }
 //
@@ -290,7 +283,6 @@ public class FileProcessor {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
 
                 }
             });
@@ -381,9 +373,9 @@ public class FileProcessor {
 
                     // Downscale bitmap
                     JobOptions options = new JobOptions();
-                    options.requestedWidth = fCeil;
-                    options.requestedHeight = fCeil;
-                    options.scaleType = ScaleType.FIT_CENTER;
+                    options.setRequestedHeight(fCeil);
+                    options.setRequestedHeight(fCeil);
+                    options.setScaleType(ScaleType.FIT_CENTER);
                     Bitmap transformedBitmap = ImageUtil.transformBitmap(bitmap, options);
 
                     // Store some data we need to access beyond the do{} block

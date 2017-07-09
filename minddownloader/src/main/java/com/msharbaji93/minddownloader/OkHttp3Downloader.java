@@ -32,10 +32,7 @@ import okhttp3.ResponseBody;
 public class OkHttp3Downloader implements Downloader {
 
     private static final OkHttp3Downloader instance = new OkHttp3Downloader();
-    private static final Handler uiHandler = new Handler(Looper.getMainLooper());
-
-    final OkHttpClient client;
-    Context context;
+    private final OkHttpClient client;
 
 
     public OkHttp3Downloader() {
@@ -43,7 +40,6 @@ public class OkHttp3Downloader implements Downloader {
     }
 
     public OkHttp3Downloader(Context context) {
-        this.context = context;
         client = new OkHttpClient();
     }
 
@@ -53,24 +49,38 @@ public class OkHttp3Downloader implements Downloader {
 
     @NonNull
     @Override
-    public void load(@NonNull final Request request , final DownoadFileCallback downoadFileCallback) throws IOException {
-        Thread thread = new Thread(new Runnable() {
+    public void load(@NonNull final Request request, final DownoadFileCallback downoadFileCallback) throws IOException {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 Response response = null;
                 try {
                     response = client.newCall(request).execute();
                     InputStream is = response.body().byteStream();
-                    byte [] arr = IOUtils.toByteArray(is);
+                    byte[] arr = IOUtils.toByteArray(is);
                     downoadFileCallback.onDownloadFile(arr);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        });
-        thread.start();
+        }).start();
+    }
 
-
+    @NonNull
+    @Override
+    public void load(@NonNull final Request request, final GetJsonCallback getJsonCallback) throws IOException {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    getJsonCallback.onDownloadString(response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @NonNull
@@ -79,10 +89,24 @@ public class OkHttp3Downloader implements Downloader {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-         load(request, downoadFileCallback);
+        load(request, downoadFileCallback);
+    }
+
+    @NonNull
+    @Override
+    public void load(@NonNull String url, final GetJsonCallback getJsonCallback) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        load(request, getJsonCallback);
     }
 
     public interface DownoadFileCallback {
-        void onDownloadFile(byte [] binaryData);
+        void onDownloadFile(byte[] binaryData);
     }
+
+    public interface GetJsonCallback {
+        void onDownloadString(String json);
+    }
+
 }

@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     tools:context="com.msharbaji93.mindvalleydownloader.ui.Main.MainActivity">
 
-
-
     <GridView
         android:id="@+id/gallaryGridView"
         android:layout_width="match_parent"
@@ -20,6 +18,5 @@
         android:horizontalSpacing="3dp"
         android:focusable="true"
         android:clickable="true"/>
-
 
 </RelativeLayout>
