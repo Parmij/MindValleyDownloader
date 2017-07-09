@@ -3,6 +3,7 @@ package com.msharbaji93.minddownloader;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
@@ -61,6 +62,12 @@ public class Utils {
         // Convert the dps to pixels, based on density scale
         return (int)((dp * scale) + 0.5f);
     }
+
+    public static float pxToDp(float px) {
+        float densityDpi = Resources.getSystem().getDisplayMetrics().densityDpi;
+        return px / (densityDpi / 160f);
+    }
+
 
 
 
