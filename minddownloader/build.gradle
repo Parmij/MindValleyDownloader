@@ -5,8 +5,8 @@ ext {
     bintrayName = 'Mind-valley-downloader'
 
     publishedGroupId = 'com.mindvalley.downloader'
-    libraryName = 'MindValleyDownloader'
-    artifact = 'Mind-valley-downloader'
+    libraryName = 'minddownloader'
+    artifact = 'minddownloader'
 
     libraryDescription = 'A library that help download all types of files and text'
 
