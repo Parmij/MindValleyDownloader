@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/Parmij/MindValleyDownloader'
     gitUrl = 'https://github.com/Parmij/MindValleyDownloader.git'
 
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.2'
 
     developerId = 'msharbaji93'
     developerName = 'Mohamad Abdalbaqi Alsharbaji'
