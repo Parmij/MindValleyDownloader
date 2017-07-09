@@ -58,7 +58,8 @@ public class OkHttp3Downloader implements Downloader {
                     response = client.newCall(request).execute();
                     InputStream is = response.body().byteStream();
                     byte[] arr = IOUtils.toByteArray(is);
-                    downoadFileCallback.onDownloadFile(arr);
+                    if (arr != null)
+                        downoadFileCallback.onDownloadFile(arr);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -2,6 +2,7 @@ package com.msharbaji93.minddownloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -80,26 +81,17 @@ public class MindValleyDownloader {
                                 if (json == null) {
                                     callback.onLoadFailed(LoadedFrom.NETWORK, new Exception("binaryData == null"));
                                 }
-                                try {
-                                    getJsonResponse.onJsonLoaded(new JSONObject(callback.onJsonLoaded(json, LoadedFrom.NETWORK)));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                getJsonResponse.onJsonLoaded(callback.onJsonLoaded(json, LoadedFrom.NETWORK));
+
                             }
                         });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-
-//                    return work(urlString);
                 } else {
                     final FileProcessorCallback callback = new FileProcessorCallback(fileManager, urlString);
-                    try {
-                        getJsonResponse.onJsonLoaded(new JSONObject(callback.onJsonLoaded((String) object, LoadedFrom.NETWORK)));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    getJsonResponse.onJsonLoaded(callback.onJsonLoaded((String) object, LoadedFrom.NETWORK));
                 }
             }
         });
@@ -160,6 +152,6 @@ public class MindValleyDownloader {
 
 
     public interface LoadJson {
-        void onJsonLoaded(JSONObject jsonObject);
+        void onJsonLoaded(String jsonObject);
     }
 }

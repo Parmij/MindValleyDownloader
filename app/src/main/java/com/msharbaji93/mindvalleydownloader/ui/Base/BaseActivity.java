@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.msharbaji93.mindvalleydownloader.Application;
 import com.msharbaji93.mindvalleydownloader.injection.component.ActivityComponent;
+//import com.msharbaji93.mindvalleydownloader.injection.component.DaggerActivityComponent;
 import com.msharbaji93.mindvalleydownloader.injection.component.DaggerActivityComponent;
 import com.msharbaji93.mindvalleydownloader.injection.module.ActivityModule;
 
