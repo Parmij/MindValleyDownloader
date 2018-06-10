@@ -1,4 +1,4 @@
-# MindValley Downloader Task
+# MindValleyDownloader
 
 A file Downloading with first class caching library for Android, and It's handle for many common pitfalls for loading image automatically like:
 1. Complex image transformations with minimal memory use.
