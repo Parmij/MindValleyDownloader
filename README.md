@@ -43,12 +43,6 @@ Add the following to your depedencies:
 compile 'com.mindvalley.downloader:minddownloader:0.0.2'
 ```
 
-
-Example:
---------
-![alt tag](https://s13.postimg.org/ost0tqsfb/giphy.gif)
-
-
 License
 --------
 
